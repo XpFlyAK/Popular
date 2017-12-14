@@ -1,13 +1,5 @@
 import React, {Component} from 'react'
-import {
-    View,
-    Image,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    ScrollView,
-    ToastAndroid
-} from 'react-native'
+import {ScrollView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View} from 'react-native'
 import CustomNavigationBar from '../view/CustomNavigationBar'
 import ViewUtils from "../utils/ViewUtils";
 import DaoUtils, {FLAG_LANGUAGE} from '../dao/DaoUtils'
@@ -96,24 +88,35 @@ export default class CustomLabelPage extends Component {
                 });
             })
             .catch((error) => ToastAndroid.show('error', 2000))
-
     }
 
     labelList() {
-        let viewArray = [];
         if (!this.state.dataArray || this.state.dataArray.length === 0) {
             ToastAndroid.show('empty', 2000);
             return null;
         }
-        for (let i = 0, l = this.state.dataArray.length - 2; i < l; i += 2) {
+        let viewArray = [];
+        let len = this.state.dataArray.length;
+        for (let i = 0, l = len - 2; i < l; i += 2) {
             viewArray.push(
                 <View key={i}>
-                    <Text>{this.state.dataArray[i].name}</Text>
-                    <Text>{this.state.dataArray[i + 1].name}</Text>
-                    <View style={{backgroundColor: 'black'}}/>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text>{this.state.dataArray[i].name}</Text>
+                        <Text>{this.state.dataArray[i + 1].name}</Text>
+                    </View>
+                    <View style={{height: 1, backgroundColor: 'black'}}/>
                 </View>
-            )
+            );
         }
+        viewArray.push(
+            <View key={len - 1}>
+                <View style={{flexDirection:'row'}}>
+                    {len % 2 === 0 ? <Text>{this.state.dataArray[len - 2].name}</Text> : null}
+                    <Text>{this.state.dataArray[len - 1].name}</Text>
+                </View>
+                <View style={{height: 1, backgroundColor: "black"}}/>
+            </View>
+        );
         return viewArray;
 
     }
@@ -130,7 +133,7 @@ export default class CustomLabelPage extends Component {
                                      rightIcon={rightButton}
                                      statusBarProps={{backgroundColor: 'red',}}/>
                 <ScrollView>
-                    <Text>{this.state.dataArray}</Text>
+                    <Text>{JSON.stringify(this.state.dataArray)}</Text>
                     {this.labelList()}
                 </ScrollView>
             </View>

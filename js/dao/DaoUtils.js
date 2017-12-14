@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {View, Image, Text, StyleSheet, AsyncStorage, ToastAndroid} from 'react-native'
+import React from 'react'
+import {AsyncStorage} from 'react-native'
 import key from '../../res/data/keys.json'
 
 /**
@@ -24,12 +24,12 @@ export default class DaoUtils {
                 } else {
                     if (result) {
                         try {
-                            resolve(result)
+                            resolve(JSON.parse(result))
                         } catch (e) {
                             reject(e)
                         }
-                    }else{
-                        let data = this.flag === FLAG_LANGUAGE.flag_key?key:null;
+                    } else {
+                        let data = this.flag === FLAG_LANGUAGE.flag_key ? key : null;
                         this.saveData(data);
                         resolve(data)
                     }
@@ -38,12 +38,14 @@ export default class DaoUtils {
         });
     }
 
-    saveData(data){
-        AsyncStorage.setItem(this.flag,JSON.stringify(data),(error)=>{})
+    saveData(data) {
+        AsyncStorage.setItem(this.flag, JSON.stringify(data), (error) => {
+        })
     }
 
-    removeData(){
-        AsyncStorage.removeItem(this.flag,(error=>{}))
+    removeData() {
+        AsyncStorage.removeItem(this.flag, (error => {
+        }))
     }
 
 
