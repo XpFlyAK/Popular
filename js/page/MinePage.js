@@ -3,6 +3,7 @@ import {View, Image, Text, StyleSheet} from 'react-native'
 import StyleConstant from "../utils/StyleConstant";
 import {StackNavigator} from 'react-navigation'
 import CustomNavigation from "../utils/CustomNavigation";
+
 /**
  * @创建者 :  Xp FlyAK
  * @类名 ： MinePage
@@ -24,7 +25,9 @@ export default class MinePage extends Component {
         const {navigate} = this.props.navigation;
         return (<View style={StyleConstant.contain}>
             <Text style={{height:40 ,fontSize:30}}
-                  onPress={()=>{navigate("CustomLabel",{name:'自定义标签页'})}}>自定义标签页</Text>
+                  onPress={()=>{navigate("CustomLabel",{name:'自定义标签页'})}}>CustomLabel</Text>
+            <Text style={{height:40 ,fontSize:30}}
+                  onPress={()=>{navigate("SortLabel",{name:'排序标签页'})}}>SortLabel</Text>
         </View>)
     }
 }

@@ -55,7 +55,7 @@ export default class CustomLabelPage extends Component {
             this.props.navigation.goBack();
             return;
         }
-        this.languageDao.saveData(this.state.dataArray)
+        this.languageDao.saveData(this.state.dataArray);
         this.props.navigation.goBack();
         // this.languageDao.removeData()
     };
@@ -133,7 +133,7 @@ export default class CustomLabelPage extends Component {
 
     render() {
         let rightButton = <TouchableOpacity onPress={() => this.onSave()}>
-            <Text style={{color: 'white', marginRight: 10, fontSize: 18}}>save</Text>
+            <Text style={{color: 'white', marginRight: 10, fontSize: 18}}>Save</Text>
         </TouchableOpacity>;
         return (
             <View>
