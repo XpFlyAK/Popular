@@ -1,52 +1,14 @@
 import React, {Component} from 'react'
-import {ScrollView, StyleSheet, Text, ToastAndroid, TouchableOpacity, View} from 'react-native'
+import {
+    Image, ScrollView, StyleSheet, Text, ToastAndroid, TouchableOpacity,
+    View,Alert
+} from 'react-native'
 import CustomNavigationBar from '../view/CustomNavigationBar'
 import ViewUtils from "../utils/ViewUtils";
 import DaoUtils, {FLAG_LANGUAGE} from '../dao/DaoUtils'
+import CheckBox from 'react-native-check-box'
+import ArrayUtils from '../utils/ArrayUtils'
 
-const key = [
-    {
-        "path": "stars:>1",
-        "name": "ALL",
-        "short_name": "ALL",
-        "checked": true
-    },
-    {
-        "path": "Android",
-        "name": "Android",
-        "checked": true
-    },
-    {
-        "path": "iOS",
-        "name": "iOS",
-        "checked": true
-    },
-    {
-        "path": "react-native",
-        "name": "React Native",
-        "checked": false
-    },
-    {
-        "path": "MySQL",
-        "name": "MySQL",
-        "checked": false
-    },
-    {
-        "path": " AngularJS",
-        "name": " AngularJS",
-        "checked": false
-    },
-    {
-        "path": " jQuery",
-        "name": " jQuery",
-        "checked": false
-    },
-    {
-        "path": " react",
-        "name": " React",
-        "checked": false
-    }
-];
 /**
  * @创建者 :  Xp FlyAK
  * @类名 ： CustomLabelPage
@@ -59,13 +21,25 @@ export default class CustomLabelPage extends Component {
     constructor(props) {
         super(props);
         this.languageDao = new DaoUtils(FLAG_LANGUAGE.flag_key);
+        this.valueArray = [];
         this.state = {
-            dataArray: []
+            dataArray: [],
         }
     }
 
     onCallBack() {
-        this.props.navigation.goBack();
+        if (this.valueArray.length===0){
+            this.props.navigation.goBack();
+            return;
+        }
+        Alert.alert(
+            'Alert Title',
+            'My Alert Msg',
+            [
+                {text: 'Cancel', onPress: () => this.props.navigation.goBack(), style: 'cancel'},
+                {text: 'OK', onPress: () => this.onSave()},
+            ],
+        );
     }
 
     componentDidMount() {
@@ -77,7 +51,13 @@ export default class CustomLabelPage extends Component {
 
 
     onSave() {
-        this.languageDao.removeData()
+        if (this.valueArray.length === 0) {
+            this.props.navigation.goBack();
+            return;
+        }
+        this.languageDao.saveData(this.state.dataArray)
+        this.props.navigation.goBack();
+        // this.languageDao.removeData()
     };
 
     loadData() {
@@ -90,9 +70,10 @@ export default class CustomLabelPage extends Component {
             .catch((error) => ToastAndroid.show('error', 2000))
     }
 
+
     labelList() {
         if (!this.state.dataArray || this.state.dataArray.length === 0) {
-            ToastAndroid.show('empty', 2000);
+            // ToastAndroid.show('empty', 2000);
             return null;
         }
         let viewArray = [];
@@ -101,23 +82,52 @@ export default class CustomLabelPage extends Component {
             viewArray.push(
                 <View key={i}>
                     <View style={{flexDirection: 'row'}}>
-                        <Text>{this.state.dataArray[i].name}</Text>
-                        <Text>{this.state.dataArray[i + 1].name}</Text>
+                        {/*<Text>{this.state.dataArray[i].name}</Text>
+                        <Text>{this.state.dataArray[i + 1].name}</Text>*/}
+                        {this.renderCheckBox(this.state.dataArray[i])}
+                        {this.renderCheckBox(this.state.dataArray[i + 1])}
                     </View>
-                    <View style={{height: 1, backgroundColor: 'black'}}/>
+                    <View style={style.line}/>
                 </View>
             );
         }
         viewArray.push(
             <View key={len - 1}>
-                <View style={{flexDirection:'row'}}>
-                    {len % 2 === 0 ? <Text>{this.state.dataArray[len - 2].name}</Text> : null}
-                    <Text>{this.state.dataArray[len - 1].name}</Text>
+                <View style={{flexDirection: 'row'}}>
+                    {len % 2 === 0 ? this.renderCheckBox(this.state.dataArray[len - 2]) : null}
+                    {this.renderCheckBox(this.state.dataArray[len - 1])}
                 </View>
-                <View style={{height: 1, backgroundColor: "black"}}/>
+                <View style={style.line}/>
             </View>
         );
         return viewArray;
+    }
+
+    renderCheckBox(data) {
+        return <CheckBox
+            style={{padding: 10, flex: 1, justifyContent: 'center'}}
+            onClick={() => this.onClick(data)}
+            leftText={data.name}
+            isChecked={data.checked}
+            unCheckedImage={<Image tintColor={'red'}
+                                   source={require('../../res/my/img/ic_check_box_outline_blank.png')}/>}
+            checkedImage={<Image tintColor={'red'}
+                                 source={require('../../res/my/img/ic_check_box.png')}/>}/>
+    }
+
+
+    onClick(data) {
+        data.checked = !data.checked;
+        // this.languageDao.saveData(data)
+        /*   for(let i = 0,len = this.valueArray.length; i<len; i++ ){
+               let boolValue = this.valueArray[i];
+               if (boolValue === data.checked){
+                   this.valueArray.slice(data.checked,1);
+                   return;
+               }
+           }
+           this.valueArray.push(data.checked);*/
+        ArrayUtils.updateArray(this.valueArray, data.checked)
 
     }
 
@@ -133,7 +143,7 @@ export default class CustomLabelPage extends Component {
                                      rightIcon={rightButton}
                                      statusBarProps={{backgroundColor: 'red',}}/>
                 <ScrollView>
-                    <Text>{JSON.stringify(this.state.dataArray)}</Text>
+                    {/*<Text>{JSON.stringify(this.state.dataArray)}</Text>*/}
                     {this.labelList()}
                 </ScrollView>
             </View>
@@ -146,4 +156,6 @@ const style = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row'
     },
+
+    line: {height: 0.3, backgroundColor: 'gray'},
 });
