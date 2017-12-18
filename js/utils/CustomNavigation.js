@@ -15,12 +15,12 @@ import CardStackStyleInterpolator from "react-navigation/src/views/CardStack/Car
  * @时间 ：2017/12/12 9:44
  * @版本号：
  */
-//https://github.com/react-community/react-navigation/pull/1187#issuecomment-300112470
+//transitionConfig：https://github.com/react-community/react-navigation/pull/1187#issuecomment-300112470
 const animateInto = ()=>({
     screenInterpolator: CardStackStyleInterpolator.forHorizontal,
     transitionSpec: {
-        duration: 250,
-        easing: Easing.bounce,
+        duration: 200,
+        easing: Easing.linear,
         timing: Animated.timing,
     },
 });
@@ -33,6 +33,7 @@ const CustomNavigation = StackNavigator(
     },
     {
         headerMode: 'none',
+        //有效的
         transitionConfig:animateInto,
     }
 );

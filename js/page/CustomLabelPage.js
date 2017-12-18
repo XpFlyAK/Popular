@@ -18,6 +18,11 @@ import ArrayUtils from '../utils/ArrayUtils'
  */
 
 export default class CustomLabelPage extends Component {
+
+    static defaultProps={
+        isRemove:false
+    };
+
     constructor(props) {
         super(props);
         this.languageDao = new DaoUtils(FLAG_LANGUAGE.flag_key);
@@ -33,8 +38,8 @@ export default class CustomLabelPage extends Component {
             return;
         }
         Alert.alert(
-            'Alert Title',
-            'My Alert Msg',
+            'Do you want to exit?',
+            'Are you sure to save labels?',
             [
                 {text: 'Cancel', onPress: () => this.props.navigation.goBack(), style: 'cancel'},
                 {text: 'OK', onPress: () => this.onSave()},
@@ -43,6 +48,7 @@ export default class CustomLabelPage extends Component {
     }
 
     componentDidMount() {
+        console.log(111111);
         this.loadData();
         // this.setState({
         //     dataArray:key,
@@ -104,15 +110,17 @@ export default class CustomLabelPage extends Component {
     }
 
     renderCheckBox(data) {
+        let checked = this.props.isRemove===true?false:data.checked;
         return <CheckBox
             style={{padding: 10, flex: 1, justifyContent: 'center'}}
             onClick={() => this.onClick(data)}
             leftText={data.name}
-            isChecked={data.checked}
+            isChecked={checked}
             unCheckedImage={<Image tintColor={'red'}
                                    source={require('../../res/my/img/ic_check_box_outline_blank.png')}/>}
             checkedImage={<Image tintColor={'red'}
                                  source={require('../../res/my/img/ic_check_box.png')}/>}/>
+
     }
 
 
@@ -132,12 +140,13 @@ export default class CustomLabelPage extends Component {
     }
 
     render() {
+        let title = this.props.isRemove===true?'RemoveLabel':'CustomLabel';
         let rightButton = <TouchableOpacity onPress={() => this.onSave()}>
             <Text style={{color: 'white', marginRight: 10, fontSize: 18}}>Save</Text>
         </TouchableOpacity>;
         return (
             <View>
-                <CustomNavigationBar title='CustomLabel'
+                <CustomNavigationBar title={title}
                                      titleColor={'white'}
                                      leftIcon={ViewUtils.getLeftButton(() => this.onCallBack())}
                                      rightIcon={rightButton}
