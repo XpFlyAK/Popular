@@ -12,15 +12,15 @@ import {View, Image, Text, StyleSheet} from 'react-native'
 export default class ArrayUtils {
 
     //更新数组  没有数据则添加  有则删除重新添加
-    static updateArray(valueArray, itemKey) {
+    static updateArray(valueArray, data) {
         for (let i = 0, len = valueArray.length; i < len; i++) {
             let boolValue = valueArray[i];
-            if (boolValue === itemKey) {
-                valueArray.slice(itemKey, 1);
+            if (boolValue === data.checked) {
+                valueArray.slice(data, 1);
                 return;
             }
         }
-        valueArray.push(itemKey);
+        valueArray.push(data);
     }
 
 
@@ -35,20 +35,31 @@ export default class ArrayUtils {
         }
         return cloneArray;
     }
+
     //两个数组是否相等
-    static isEqualsArray(arr1,arr2) {
+    static isEqualsArray(arr1, arr2) {
         if (!(arr1 && arr2)) {
             return false;
         }
         if (arr1.length !== arr2.length) {
             return false;
         }
-        for(let i = 0,len = arr1.length;i<len;i++){
-            if (arr1[i]!==arr2[i]){
+        for (let i = 0, len = arr1.length; i < len; i++) {
+            if (arr1[i] !== arr2[i]) {
                 return false;
             }
         }
         return true;
     }
+
+    static remove(arr1, data) {
+        if (!arr1) return;
+        for (let i = 0, len = arr1.length; i < len; i++) {
+            if (arr1[i]===data) {
+                arr1.splice(i, 1);
+            }
+        }
+    }
+
 
 }

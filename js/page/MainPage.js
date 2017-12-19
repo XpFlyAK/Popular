@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, Text, StyleSheet} from 'react-native'
+import {View, Image, Text, StyleSheet,DeviceEventEmitter,ToastAndroid,} from 'react-native'
 import StyleConstant from '../utils/StyleConstant'
 import TabNavigator from 'react-native-tab-navigator';
 import PopularPage from './PopularPage'
@@ -23,6 +23,19 @@ export default class MainPage extends Component {
         }
 
     }
+
+
+    componentDidMount() {
+        this.listener = DeviceEventEmitter.addListener('showToast',(msg)=>{
+                ToastAndroid.show(msg,2000);
+        })
+    }
+
+
+    componentWillUnmount() {
+        this.listener&&this.listener.remove();
+    }
+
 
     render() {
         return (

@@ -28,8 +28,8 @@ export default class MinePage extends Component {
                   onPress={()=>{navigate("CustomLabel",{name:'自定义标签页'})}}>CustomLabel</Text>
             <Text style={{height:40 ,fontSize:30}}
                   onPress={()=>{navigate("SortLabel",{name:'排序标签页'})}}>SortLabel</Text>
-            <Text style={{height:40 ,fontSize:30}} isRemove={true}
-                  onPress={()=>{navigate("CustomLabel",{name:'移除标签页'})}}>RemoveLabel</Text>
+            <Text style={{height:40 ,fontSize:30}}
+                  onPress={()=>{navigate("CustomLabel",{name:'移除标签页',isRemove:true})}}>RemoveLabel</Text>
         </View>)
     }
 }

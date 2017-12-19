@@ -61,6 +61,11 @@ export default class CustomLabelPage extends Component {
             this.props.navigation.goBack();
             return;
         }
+        if (this.props.navigation.state.params.isRemove){
+            for(let i = 0, len = this.valueArray.length;i<len;i++){
+                ArrayUtils.remove(this.state.dataArray,this.valueArray[i])
+            }
+        }
         this.languageDao.saveData(this.state.dataArray);
         this.props.navigation.goBack();
         // this.languageDao.removeData()
@@ -110,7 +115,8 @@ export default class CustomLabelPage extends Component {
     }
 
     renderCheckBox(data) {
-        let checked = this.props.isRemove===true?false:data.checked;
+        //外部空间是Text  但是传值用得是navigate()方法
+        let checked = this.props.navigation.state.params.isRemove===true?false:data.checked;
         return <CheckBox
             style={{padding: 10, flex: 1, justifyContent: 'center'}}
             onClick={() => this.onClick(data)}
@@ -135,7 +141,7 @@ export default class CustomLabelPage extends Component {
                }
            }
            this.valueArray.push(data.checked);*/
-        ArrayUtils.updateArray(this.valueArray, data.checked)
+        ArrayUtils.updateArray(this.valueArray, data)
 
     }
 
