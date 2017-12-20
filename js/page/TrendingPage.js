@@ -1,7 +1,14 @@
 import React, {Component} from 'react'
 import {View, Image, Text, StyleSheet, TextInput, ToastAndroid} from 'react-native'
 import StyleConstant from "../utils/StyleConstant";
-import DaoUtils from '../dao/DaoUtils'
+import DaoUtils ,{FLAG_LANGUAGE} from '../dao/DaoUtils'
+import CustomNavigationBar from "../view/CustomNavigationBar";
+import HttpUtils from '../http/HttpUtils'
+import ScrollableTabView from 'react-native-scrollable-tab-view'
+import LoadDataPage from "./LoadDataPage";
+import Constants from "../utils/Constants";
+import DataRepository ,{PAGE_FLAG}from "../http/DataRepository";
+import TrendItemPage from "./TrendItemPage";
 
 /**
  * @创建者 :  Xp FlyAK
@@ -12,46 +19,77 @@ import DaoUtils from '../dao/DaoUtils'
  */
 
 export default class TrendingPage extends Component {
+
+    static defaultProps = {};
+
     constructor(props) {
         super(props);
+        this.languageDao = new DaoUtils(FLAG_LANGUAGE.flag_language);
+        this.state = {
+            text: '',
+            dataArray: [],
+        };
     }
 
-    onSave() {
-        DaoUtils.setItemData(this.text, this.text)
-            .then(() => ToastAndroid.show('save success', ToastAndroid.SHORT))
-            .catch(error => ToastAndroid.show('save failed', ToastAndroid.SHORT))
+    componentDidMount() {
+        this.onLoadData();
     }
 
-    onRemove() {
-        DaoUtils.removeItemData(this.text)
-            .then(() => ToastAndroid.show('remove success', ToastAndroid.SHORT))
-            .catch((error) => ToastAndroid.show('remove failed', ToastAndroid.SHORT))
+    getData() {
+        HttpUtils.getFetch(Constants.API_URL + 'android' + Constants.QUERY_STR)
+            .then(response => this.setState({text: JSON.stringify(response)}))
+            .catch(error => this.setState({text: JSON.stringify(error)}))
     }
 
-    onGet() {
-        DaoUtils.getItemData(this.text)
-            .then((response) => {
-                    if (response!==null&&response!=='') {
-                        ToastAndroid.show(response,ToastAndroid.SHORT)
-                    }else{
-                        ToastAndroid.show('cant find element',ToastAndroid.SHORT)
-                    }
-                }
-            )
-            .catch((error) => ToastAndroid.show('get failed', ToastAndroid.SHORT))
+    onLoadData() {
+        this.languageDao.fetchData()
+            .then((result) => {
+                this.setState({
+                    dataArray: result,
+                })
+            })
+            .catch(error => ToastAndroid.show('读取数据库失败', 2000))
+    };
+
+    addLanguagePage(dataArray) {
+        let viewArray = [];
+        if (!dataArray || dataArray.length === 0) {
+            return;
+        }
+        for (let i = 0, l = dataArray.length; i < l; i++) {
+            viewArray.push(
+                <View tabLabel={dataArray[i].name}>
+                    <LoadDataPage tabLabel={dataArray[i].name} loadLabel={dataArray[i].name}/>
+                </View>)
+        }
+        return viewArray;
     }
 
     render() {
+        let content = this.state.dataArray.length > 0 ?
+            <ScrollableTabView tabBarActiveTextColor={'white'}
+                               tabBarInactiveTextColor={'mintcream'}
+                               tabBarBackgroundColor={'red'}
+                               tabBarUnderlineStyle={{backgroundColor: 'yellow', height: 3}}>
+                {this.state.dataArray.map((result, i, arr) => {
+                    let lan = arr[i];
+                    return lan.checked ?
+                        <TrendItemPage key={i} tabLabel={lan.name} loadLabel={lan.name} {...this.props}/> : null;
+                })}
+            </ScrollableTabView> : null;
         return (
             <View style={StyleConstant.contain}>
-                <TextInput style={[StyleConstant.fullWidth]}
-                           onChangeText={(text) => {
-                               this.text = text
-                           }}/>
-                <Text style={{height:30,textAlign:'center'}} onPress={() => this.onSave()}>存储</Text>
-                <Text style={{height:30,textAlign:'center'}} onPress={() => this.onGet()}>取出</Text>
-                <Text style={{height:30,textAlign:'center'}} onPress={() => this.onRemove()}>移除</Text>
+                <CustomNavigationBar titleColor={'white'}
+                                     title={this.props.text}
+                                     statusBarProps={{
+                                         backgroundColor: 'red',
+                                         barStyle: 'light-content',
+                                     }}
+                />
+                {content}
             </View>
         );
     }
 }
+
+const style = StyleSheet.create({});

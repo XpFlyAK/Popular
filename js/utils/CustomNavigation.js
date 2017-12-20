@@ -7,7 +7,7 @@ import MinePage from '../page/MinePage'
 import CustomLabelPage from '../page/CustomLabelPage'
 import SortLabelPage from "../page/SortLabelPage";
 import CardStackStyleInterpolator from "react-navigation/src/views/CardStack/CardStackStyleInterpolator";
-
+import WebViewPage from '../page/WebViewPage'
 /**
  * @创建者 :
  * @类名 ： CustomNavigation
@@ -29,7 +29,8 @@ const CustomNavigation = StackNavigator(
         Splash: {screen: SplashPage},
         Main: {screen: MainPage},
         CustomLabel: {screen: CustomLabelPage},
-        SortLabel: {screen: SortLabelPage}
+        SortLabel: {screen: SortLabelPage},
+        WebView:{screen:WebViewPage},
     },
     {
         headerMode: 'none',

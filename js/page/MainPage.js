@@ -51,7 +51,7 @@ export default class MainPage extends Component {
                                                          source={require('../../res/images/ic_polular.png')}/>}
                         // badgeText="1"
                         onPress={() => this.setState({selectedTab: 'Popular'})}>
-                        {<PopularPage text={this.state.selectedTab}/>}
+                        {<PopularPage text={this.state.selectedTab} {...this.props}/>}
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'Trending'}
@@ -63,7 +63,7 @@ export default class MainPage extends Component {
                                                          source={require('../../res/images/ic_trending.png')}/>}
                         // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({selectedTab: 'Trending'})}>
-                        {<TrendingPage />}
+                        {<TrendingPage text={this.state.selectedTab} {...this.props}/>}
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'Favorite'}

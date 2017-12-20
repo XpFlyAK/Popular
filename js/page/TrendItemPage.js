@@ -1,10 +1,6 @@
 import React, {Component} from 'react'
 import {
-    View,
-    Image,
-    Text,
-    StyleSheet,
-    ListView,
+    View, Image, Text, StyleSheet, ListView,
     FlatList,
     TouchableOpacity,
     RefreshControl,
@@ -15,26 +11,24 @@ import {
 import Constants from "../utils/Constants";
 import HttpUtils from "../http/HttpUtils";
 import StyleConstant from "../utils/StyleConstant";
-import DataRepository from '../http/DataRepository'
-
+import DataRepository, {PAGE_FLAG} from '../http/DataRepository'
 
 /**
  * @创建者 :  Xp FlyAK
- * @类名 ： LoadDataPage
- * @描述 :    Popular页面item视图
- * @时间 ：2017/12/12 15:28
+ * @类名 ： TrendItemPage
+ * @描述 :
+ * @时间 ：2017/12/20 16:43
  * @版本号：
  */
 
-export default class LoadDataPage extends Component {
-
+export default class TrendItemPage extends Component {
     static defaultProps = {
         loadLabel: ''
     };
 
     constructor(props) {
         super(props);
-        this.dataRepository = new DataRepository();
+        this.dataRepository = new DataRepository(PAGE_FLAG.page_trend);
         this.state = {
             dataSource: null,
             isRefresh: false,
@@ -42,7 +36,7 @@ export default class LoadDataPage extends Component {
     }
 
     getData() {
-        let url = Constants.API_URL + this.props.loadLabel + Constants.QUERY_STR;
+        let url = Constants.TREND + this.props.loadLabel;
         this.setState({isRefresh: true});
         this.dataRepository.fetchDataRepository(url)
             .then(result => {
@@ -86,29 +80,34 @@ export default class LoadDataPage extends Component {
         this.getData();
     }
 
-    onItemClick(item){
-        this.props.navigation.navigate('WebView',{full_name:item.full_name,url:item.html_url})
+    onItemClick(item) {
+        this.props.navigation.navigate('WebView', {full_name: item.fullName, url: Constants.HOME_URL+item.fullName})
     }
 
     renderItem(item) {
         return (
-            <TouchableOpacity style={StyleConstant.contain} onPress={()=>this.onItemClick(item)}>
+            <TouchableOpacity style={StyleConstant.contain} onPress={() => this.onItemClick(item)}>
                 <View style={style.cell_container}>
-                    <Text style={style.title}>{item.name}</Text>
+                    <Text style={style.title}>{item.fullName}</Text>
                     <Text style={style.description}>{item.description}</Text>
+                    <Text style={style.description}>{item.meta}</Text>
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                     }}>
                         <View style={{marginTop: 10, flexDirection: 'row'}}>
-                            <Text>author:</Text>
-                            <Image style={{marginLeft: 5, height: 22, width: 22}}
-                                   source={{uri: item.owner.avatar_url}}/>
+                            <Text style={style.description}>Build by:</Text>
+                            {
+                                item.contributors.map((result, i, arr) => {
+                                    return <Image
+                                        key={i}
+                                        style={{marginLeft: 5, height: 22, width: 22}}
+                                        source={{uri: arr[i]}}/>
+                                })
+                            }
                         </View>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text>Stars: {item.stargazers_count}</Text>
-                        </View>
+
                         <Image style={{height: 22, width: 22}}
                                source={require('../../res/images/ic_unstar.png')}/>
                     </View>
@@ -119,7 +118,7 @@ export default class LoadDataPage extends Component {
     }
 
     _keyExtractor(item, index) {
-        return item.id;
+        return item.fullName;
     }
 
 

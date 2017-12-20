@@ -72,7 +72,7 @@ export default class PopularPage extends Component {
                 {this.state.dataArray.map((result, i, arr) => {
                     let lan = arr[i];
                     return lan.checked ?
-                        <LoadDataPage key={i} tabLabel={lan.name} loadLabel={lan.name}/> : null;
+                        <LoadDataPage key={i} tabLabel={lan.name} loadLabel={lan.name} {...this.props}/> : null;
                 })}
             </ScrollableTabView> : null;
         return (

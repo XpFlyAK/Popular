@@ -10,6 +10,8 @@ import {View, Image, Text, StyleSheet} from 'react-native'
  */
 
 export default class Constants {
+    static  HOME_URL = 'https://github.com/';
     static  API_URL = 'https://api.github.com/search/repositories?q=';
     static  QUERY_STR = '&sort=stars';
+    static  TREND = 'https://github.com/trending/'
 }

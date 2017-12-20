@@ -1,7 +1,7 @@
 import React from 'react'
 import {AsyncStorage} from 'react-native'
 import key from '../../res/data/keys.json'
-
+import lang from '../../res/data/langs.json'
 /**
  * @创建者 :  Xp FlyAK
  * @类名 ： DaoUtils
@@ -29,7 +29,7 @@ export default class DaoUtils {
                             reject(e)
                         }
                     } else {
-                        let data = this.flag === FLAG_LANGUAGE.flag_key ? key : null;
+                        let data = this.flag === FLAG_LANGUAGE.flag_key ? key : lang;
                         this.saveData(data);
                         resolve(data)
                     }
