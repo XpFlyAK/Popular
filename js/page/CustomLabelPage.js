@@ -25,7 +25,7 @@ export default class CustomLabelPage extends Component {
 
     constructor(props) {
         super(props);
-        this.languageDao = new DaoUtils(FLAG_LANGUAGE.flag_key);
+        this.languageDao = new DaoUtils(this.props.navigation.state.params.flag);//FLAG_LANGUAGE.flag_key
         this.valueArray = [];
         this.state = {
             dataArray: [],
@@ -126,7 +126,6 @@ export default class CustomLabelPage extends Component {
                                    source={require('../../res/my/img/ic_check_box_outline_blank.png')}/>}
             checkedImage={<Image tintColor={'red'}
                                  source={require('../../res/my/img/ic_check_box.png')}/>}/>
-
     }
 
 
@@ -145,6 +144,11 @@ export default class CustomLabelPage extends Component {
 
     }
 
+    titleComponent() {
+        return <Text
+            style={[style.titleStyle, {color: 'white'}]}>{this.props.navigation.state.params.text}</Text>
+    }
+
     render() {
         let title = this.props.isRemove===true?'RemoveLabel':'CustomLabel';
         let rightButton = <TouchableOpacity onPress={() => this.onSave()}>
@@ -152,7 +156,8 @@ export default class CustomLabelPage extends Component {
         </TouchableOpacity>;
         return (
             <View>
-                <CustomNavigationBar title={title}
+                <CustomNavigationBar
+                                     titleComponent={this.titleComponent()}
                                      titleColor={'white'}
                                      leftIcon={ViewUtils.getLeftButton(() => this.onCallBack())}
                                      rightIcon={rightButton}
@@ -170,6 +175,12 @@ const style = StyleSheet.create({
     item: {
         alignItems: 'center',
         flexDirection: 'row'
+    },
+
+    titleStyle: {
+        fontSize: 18,
+        alignSelf: 'center',
+        fontWeight: '400',
     },
 
     line: {height: 0.3, backgroundColor: 'gray'},

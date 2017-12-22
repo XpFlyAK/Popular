@@ -1,14 +1,19 @@
 import React, {Component} from 'react'
-import {View, Image, Text, StyleSheet, TextInput, ToastAndroid} from 'react-native'
+import {
+    View, Image, Text, StyleSheet, TextInput, ToastAndroid, UIManager, findNodeHandle,
+    TouchableOpacity
+} from 'react-native'
 import StyleConstant from "../utils/StyleConstant";
-import DaoUtils ,{FLAG_LANGUAGE} from '../dao/DaoUtils'
+import DaoUtils, {FLAG_LANGUAGE} from '../dao/DaoUtils'
 import CustomNavigationBar from "../view/CustomNavigationBar";
 import HttpUtils from '../http/HttpUtils'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import LoadDataPage from "./LoadDataPage";
 import Constants from "../utils/Constants";
-import DataRepository ,{PAGE_FLAG}from "../http/DataRepository";
+import DataRepository, {PAGE_FLAG} from "../http/DataRepository";
 import TrendItemPage from "./TrendItemPage";
+import PopWindow from '../view/PopWindow'
+import PopFlatList from '../view/PopFlatList'
 
 /**
  * @创建者 :  Xp FlyAK
@@ -28,6 +33,9 @@ export default class TrendingPage extends Component {
         this.state = {
             text: '',
             dataArray: [],
+            isHide: true,
+            X: 0,
+            Y: 0,
         };
     }
 
@@ -65,7 +73,46 @@ export default class TrendingPage extends Component {
         return viewArray;
     }
 
+    isHideOver() {
+        this.popList.showPop();
+    }
+
+    layout(e) {
+        UIManager.measure(e.target, (x, y, width, height, left, top) => {
+            this.setState({
+                X: left,
+                Y: top,
+            });
+        });
+    };
+
+
+    renderTitleView() {
+        return <View>
+            <TouchableOpacity ref='button' onPress={() => this.isHideOver()}
+                              onLayout={({nativeEvent: e}) => this.layout(e)}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text
+                        style={[style.titleStyle, {color: 'white'}]}>{this.props.text}</Text>
+                    <Image style={{height: 12, width: 12, marginLeft: 5}}
+                           source={require('../../res/images/ic_spinner_triangle.png')}/>
+                </View>
+            </TouchableOpacity>
+        </View>
+    }
+
     render() {
+        let popFlatList = <PopFlatList ref={ref => this.popList = ref}
+                                       x={this.state.X + 20}
+                                       y={this.state.Y + 10}
+                                       isHide={true}
+                                       dataArray={[{key: 'daily'}, {key: 'weekly'}, {key: 'monthly'}]}/>;
+
+        let popover = <PopWindow show={this.state.isHide}
+                                 closeModal={(show) => {
+                                     this.setState({isHide: show})
+                                 }}
+                                 dataArray={['第一!!', '第二!!', '第三!!']}/>;
         let content = this.state.dataArray.length > 0 ?
             <ScrollableTabView tabBarActiveTextColor={'white'}
                                tabBarInactiveTextColor={'mintcream'}
@@ -74,22 +121,35 @@ export default class TrendingPage extends Component {
                 {this.state.dataArray.map((result, i, arr) => {
                     let lan = arr[i];
                     return lan.checked ?
-                        <TrendItemPage key={i} tabLabel={lan.name} loadLabel={lan.name} {...this.props}/> : null;
+                        <TrendItemPage key={i} tabLabel={lan.name}
+                                       loadLabel={lan.name} {...this.props}/> : null;
                 })}
             </ScrollableTabView> : null;
         return (
-            <View style={StyleConstant.contain}>
+            <View style={style.container}>
+
                 <CustomNavigationBar titleColor={'white'}
-                                     title={this.props.text}
+                                     titleComponent={this.renderTitleView()}
                                      statusBarProps={{
                                          backgroundColor: 'red',
                                          barStyle: 'light-content',
                                      }}
                 />
+                {/*{popover}*/}
                 {content}
+                {popFlatList}
             </View>
         );
     }
 }
 
-const style = StyleSheet.create({});
+const style = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    titleStyle:{
+        fontSize: 18,
+        alignSelf: 'center',
+        fontWeight: '400',
+    },
+});

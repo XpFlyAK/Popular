@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, Text, StyleSheet,DeviceEventEmitter,ToastAndroid,} from 'react-native'
+import {View, Image, Text, StyleSheet, DeviceEventEmitter, ToastAndroid,} from 'react-native'
 import StyleConstant from '../utils/StyleConstant'
 import TabNavigator from 'react-native-tab-navigator';
 import PopularPage from './PopularPage'
@@ -26,14 +26,29 @@ export default class MainPage extends Component {
 
 
     componentDidMount() {
-        this.listener = DeviceEventEmitter.addListener('showToast',(msg)=>{
-                ToastAndroid.show(msg,2000);
+        this.listener = DeviceEventEmitter.addListener('showToast', (msg) => {
+            ToastAndroid.show(msg, 2000);
         })
     }
 
 
     componentWillUnmount() {
-        this.listener&&this.listener.remove();
+        this.listener && this.listener.remove();
+    }
+
+    renderTabItem(Component, title,src) {
+        return <TabNavigator.Item
+            selected={this.state.selectedTab === title}
+            title={title}
+            selectedTitleStyle={{color: 'red'}}
+            renderIcon={() => <Image style={style.icon}
+                                     source={src}/>}
+            renderSelectedIcon={() => <Image style={style.icon} tintColor={'red'}
+                                             source={src}/>}
+            // badgeText="1"
+            onPress={() => this.setState({selectedTab: title})}>
+            {<Component text={this.state.selectedTab} {...this.props}/>}
+        </TabNavigator.Item>
     }
 
 
@@ -41,54 +56,10 @@ export default class MainPage extends Component {
         return (
             <View style={StyleConstant.contain}>
                 <TabNavigator>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'Popular'}
-                        title="popular"
-                        selectedTitleStyle={{color: 'red'}}
-                        renderIcon={() => <Image style={style.icon}
-                                                 source={require('../../res/images/ic_polular.png')}/>}
-                        renderSelectedIcon={() => <Image style={style.icon} tintColor={'red'}
-                                                         source={require('../../res/images/ic_polular.png')}/>}
-                        // badgeText="1"
-                        onPress={() => this.setState({selectedTab: 'Popular'})}>
-                        {<PopularPage text={this.state.selectedTab} {...this.props}/>}
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'Trending'}
-                        title="trending"
-                        selectedTitleStyle={{color: 'red'}}
-                        renderIcon={() => <Image style={style.icon}
-                                                 source={require('../../res/images/ic_trending.png')}/>}
-                        renderSelectedIcon={() => <Image style={style.icon} tintColor={'red'}
-                                                         source={require('../../res/images/ic_trending.png')}/>}
-                        // renderBadge={() => <CustomBadgeView />}
-                        onPress={() => this.setState({selectedTab: 'Trending'})}>
-                        {<TrendingPage text={this.state.selectedTab} {...this.props}/>}
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'Favorite'}
-                        title="favorite"
-                        selectedTitleStyle={{color: 'red'}}
-                        renderIcon={() => <Image style={style.icon}
-                                                 source={require('../../res/images/ic_favorite.png')}/>}
-                        renderSelectedIcon={() => <Image style={style.icon} tintColor={'red'}
-                                                         source={require('../../res/images/ic_favorite.png')}/>}
-                        // renderBadge={() => <CustomBadgeView />}
-                        onPress={() => this.setState({selectedTab: 'Favorite'})}>
-                        {<FavouritePage />}
-                    </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'Mine'}
-                        title="mine"
-                        selectedTitleStyle={{color: 'red'}}
-                        renderIcon={() => <Image style={style.icon}
-                                                 source={require('../../res/images/ic_my.png')}/>}
-                        renderSelectedIcon={() => <Image style={style.icon} tintColor={'red'}
-                                                         source={require('../../res/images/ic_my.png')}/>}
-                        // renderBadge={() => <CustomBadgeView />}
-                        onPress={() => this.setState({selectedTab: 'Mine'})}>
-                        {<MinePage navigation={this.props.navigation}/>}
-                    </TabNavigator.Item>
+                    {this.renderTabItem(PopularPage,'Popular',require('../../res/images/ic_polular.png'))}
+                    {this.renderTabItem(TrendingPage,'Trending',require('../../res/images/ic_trending.png'))}
+                    {this.renderTabItem(FavouritePage,'Favorite',require('../../res/images/ic_favorite.png'))}
+                    {this.renderTabItem(MinePage,'Mine',require('../../res/images/ic_my.png'))}
                 </TabNavigator>
             </View>
         )

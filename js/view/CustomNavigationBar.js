@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import {View, Text, Image, StyleSheet, Platform, StatusBar} from 'react-native'
+import {View, Text, Image, StyleSheet, Platform, StatusBar, TouchableOpacity} from 'react-native'
 import PropTypes from 'prop-types'
+import {Popover} from "./Popover";
 
 /**
  * @创建者 :   XP FlyAk
@@ -25,7 +26,6 @@ export default class CustomNavigationBar extends Component {
     static defaultProps = {
         title: '',
         backgroundColor: 'red',
-        titleColor: 'yellow',
         isHide: 'true',
         statusBarProps: {
             backgroundColor: 'black',
@@ -37,12 +37,16 @@ export default class CustomNavigationBar extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            isVisible:false,
+            buttonRect:{},
+        }
     }
 
     static propTypes = {
-        leftIcon:PropTypes.element,
-        rightIcon:PropTypes.element,
+        leftIcon: PropTypes.element,
+        rightIcon: PropTypes.element,
+        titleComponent:PropTypes.element,
         title: PropTypes.string.isRequired,
         backgroundColor: PropTypes.string,
         titleColor: PropTypes.string,
@@ -59,16 +63,16 @@ export default class CustomNavigationBar extends Component {
         }
     };
 
+
     render() {
-        let statusBarComponent = <StatusBar {...this.props.statusBarProps} style={style.statusBar}/>;
-        let titleComponent = <Text
-            style={[style.titleStyle, {color: this.props.titleColor}]}>{this.props.title}</Text>;
+        let statusBarComponent = <StatusBar {...this.props.statusBarProps}
+                                            style={style.statusBar}/>;
         let titleBarComponent =
             <View
                 style={[style.titleBarStyle, {backgroundColor: this.props.backgroundColor}]}>
                 {this.props.leftIcon}
                 <View style={style.titleViewContain}>
-                    {titleComponent}
+                    {this.props.titleComponent}
                 </View>
                 {this.props.rightIcon}
             </View>;
@@ -86,31 +90,26 @@ const style = StyleSheet.create({
     titleBarStyle: {
         height: Platform.OS === 'ios' ? NAVIGATION_BAR_IOS_HEIGHT : NAVIGATION_BAR_ANDROID_HEIGHT,
         flexDirection: 'row',
-        justifyContent:'space-between',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        padding:5,
+        padding: 5,
     },
     containStyle: {
         flexDirection: 'column'
-    },
-
-    titleStyle: {
-        fontSize: 20,
-        alignSelf: 'center'
     },
 
     statusBar: {
         height: STATUSBAR_ANDROID_HEIGHT,
     },
 
-    titleViewContain:{
-        position:'absolute',
-        left:40,
-        right:40,
-        top:0,
-        bottom:0,
-        justifyContent:'center',
-        alignItems:'center',
+    titleViewContain: {
+        position: 'absolute',
+        left: 40,
+        right: 40,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
 

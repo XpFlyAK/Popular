@@ -113,11 +113,17 @@ export default class SortLabelPage extends Component {
         );
     }
 
+    titleComponent() {
+        return <Text
+            style={[style.titleStyle, {color: 'white'}]}>{this.props.navigation.state.params.text}</Text>
+    }
+
     render() {
         return (
             <View style={{flex: 1}}>
-                <CustomNavigationBar title='SortLabelPage'
+                <CustomNavigationBar
                                      backgroundColor='red'
+                                     titleComponent={this.titleComponent()}
                                      titleColor='white'
                                      statusBarProps={{backgroundColor: 'red'}}
                                      leftIcon={ViewUtils.getLeftButton(() => {
@@ -180,5 +186,10 @@ const style = StyleSheet.create({
         marginRight: 10,
         width: 16,
         height: 16
+    },
+    titleStyle: {
+        fontSize: 18,
+        alignSelf: 'center',
+        fontWeight: '400',
     },
 });

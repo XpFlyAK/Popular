@@ -12,7 +12,7 @@ import Constants from "../utils/Constants";
 import HttpUtils from "../http/HttpUtils";
 import StyleConstant from "../utils/StyleConstant";
 import DataRepository, {PAGE_FLAG} from '../http/DataRepository'
-
+import HTMLView from 'react-native-htmlview'
 /**
  * @创建者 :  Xp FlyAK
  * @类名 ： TrendItemPage
@@ -85,11 +85,16 @@ export default class TrendItemPage extends Component {
     }
 
     renderItem(item) {
+        let description = '<p>'+item.description+'</p>';
         return (
             <TouchableOpacity style={StyleConstant.contain} onPress={() => this.onItemClick(item)}>
                 <View style={style.cell_container}>
                     <Text style={style.title}>{item.fullName}</Text>
-                    <Text style={style.description}>{item.description}</Text>
+                    <HTMLView stylesheet={{
+                        a:style.description,
+                        p:style.description,
+                    }}
+                        value={description}/>
                     <Text style={style.description}>{item.meta}</Text>
                     <View style={{
                         flexDirection: 'row',

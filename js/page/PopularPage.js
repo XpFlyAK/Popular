@@ -63,6 +63,11 @@ export default class PopularPage extends Component {
         return viewArray;
     }
 
+    titleComponent() {
+        return <Text
+            style={[style.titleStyle, {color: 'white'}]}>{this.props.text}</Text>
+    }
+
     render() {
         let content = this.state.dataArray.length > 0 ?
             <ScrollableTabView tabBarActiveTextColor={'white'}
@@ -72,22 +77,28 @@ export default class PopularPage extends Component {
                 {this.state.dataArray.map((result, i, arr) => {
                     let lan = arr[i];
                     return lan.checked ?
-                        <LoadDataPage key={i} tabLabel={lan.name} loadLabel={lan.name} {...this.props}/> : null;
+                        <LoadDataPage key={i} tabLabel={lan.name}
+                                      loadLabel={lan.name} {...this.props}/> : null;
                 })}
             </ScrollableTabView> : null;
         return (
             <View style={StyleConstant.contain}>
-                <CustomNavigationBar titleColor={'white'}
-                                     title={this.props.text}
-                                     statusBarProps={{
-                                         backgroundColor: 'red',
-                                         barStyle: 'light-content',
-                                     }}
-                />
+                <CustomNavigationBar // title={this.props.text}
+                    titleComponent={this.titleComponent()}
+                    statusBarProps={{
+                        backgroundColor: 'red',
+                        barStyle: 'light-content',
+                    }}/>
                 {content}
             </View>
         );
     }
 }
 
-const style = StyleSheet.create({});
+const style = StyleSheet.create({
+    titleStyle: {
+        fontSize: 18,
+        alignSelf: 'center',
+        fontWeight: '400',
+    },
+});
